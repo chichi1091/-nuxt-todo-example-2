@@ -5,21 +5,36 @@
     >
         <div class="login-form">
             <form @submit.prevent="login">
-                <img src="logo.jpg">
                 <p class="error" v-if="error">{{ error }}</p>
+                <img src="logo.jpg">
                 <p>
-                    <input type="text" v-model="email" placeholder="email" name="email" class="textlines"/>
+                    <input type="text"
+                    v-model="email"
+                    placeholder="email"
+                    name="email"
+                    class="textlines"/>
                 </p>
                 <p>
-                    <input type="text" v-model="password" placeholder="password" name="password" class="textlines"/>
+                    <input type="password"
+                    v-model="password"
+                    placeholder="password"
+                    name="password"
+                    class="textlines"/>
                 </p>
                 <p>
                     <v-btn
                     light
                     block
                     elevation="2"
-                    @click="submit"
+                    type="submit"
                     >ログイン</v-btn>
+                </p>
+                <p>
+                    <v-btn
+                        block
+                        small
+                        @click="signup"
+                    >新規作成</v-btn>
                 </p>
             </form>
         </div>
@@ -27,7 +42,9 @@
 </template>
 
 <script>
-  export default {
+import axios from 'axios'
+
+export default {
     layout(context) {
         return 'login'
     },
@@ -40,15 +57,26 @@
     },
     methods: {
       async login() {
-        try {
-          await this.$store.dispatch("login", {
+        const request = {
             email: this.email,
             password: this.password
-          })
-          this.$router.push("/")
-        } catch(e) {
-          this.error = e.message
         }
+        await axios.post('/api/accounts/auth', request)
+        .then(response => {
+            console.log(response);
+            if(response.status === 200) {
+                this.$cookies.set('token', response.data.bearer_token);
+                this.$router.push("/todos");
+                return;
+            }
+            this.error = 'サインインに失敗しました';
+        }).catch(error => {
+            console.log(error);
+            this.error = 'サインインに失敗しました';
+        });
+      },
+      signup() {
+        this.$router.push("signup")
       }
     }
   }

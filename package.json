@@ -17,6 +17,7 @@
     "@nuxtjs/axios": "^5.12.1",
     "@nuxtjs/proxy": "^2.0.1",
     "@nuxtjs/vuetify": "^1.11.2",
+    "cookie-universal-nuxt": "^2.1.4",
     "nuxt": "^2.14.0",
     "prh": "^5.4.4",
     "prh-languageserver": "^1.0.1",

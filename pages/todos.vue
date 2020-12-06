@@ -91,7 +91,9 @@ import axios from 'axios'
 
 export default {
   async asyncData ({ app }) {
-    const response = await axios.get('/api/todos')
+    const response = await axios.get('/api/todos', {
+      headers: { Authorization: `Bearer ${app.$cookies.get('token')}` }
+    })
     return { todos: response.data }
   },
   data () {
@@ -119,8 +121,11 @@ export default {
       this.dialog = true
     },
     async create () {
-      await axios.post('/api/todos', this.todo)
-        .then(() => { this.$router.app.refresh() })
+      await axios.post('/api/todos', this.todo, {
+        headers: { Authorization: `Bearer ${this.$cookies.get('token')}` }
+      }).then(() => {
+        this.$router.app.refresh();
+      })
       this.close()
     },
     edit (todo) {
@@ -128,13 +133,19 @@ export default {
       this.dialog = true
     },
     async update () {
-      await axios.put('/api/todos/' + this.todo.id, this.todo)
-        .then(() => { this.$router.app.refresh() })
+      await axios.put('/api/todos/' + this.todo.id, this.todo, {
+        headers: { Authorization: `Bearer ${this.$cookies.get('token')}` }
+      }).then(() => {
+        this.$router.app.refresh()
+      })
       this.close()
     },
     async remove (todo) {
-      await axios.delete('/api/todos/' + todo.id, todo)
-        .then(() => { this.$router.app.refresh() })
+      await axios.delete('/api/todos/' + todo.id, {
+        headers: { Authorization: `Bearer ${this.$cookies.get('token')}` }
+      }).then(() => {
+        this.$router.app.refresh()
+      })
     },
     close () {
       this.dialog = false
